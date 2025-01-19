@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"
+      integrity="sha512-U5C477Z8VvmbYAoV4HDq17tf4wG6HXPC6/KM9+0/wEXQQ13gmKY2Zb0Z2vu0VNUWch4GlJ+Tl/dfoLOH4i2msw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <title>PDF Viewer</title>
+  </head>
+  <body>
+    <main>
+      <h3>PDF Viewer</h3>
+      <canvas class="pdf-viewer"></canvas>
+    </main>
+    <footer>
+      <ul class="pagination">
+        <li>
+          <button id="rotate">
+            <i class="fas fa-undo-alt"></i>
+          </button>
+        </li>
+        <li>
+          <button id="zoomOut">
+            <i class="fas fa-search-minus"></i>
+          </button>
+        </li>
+        <li>
+          <span id="zoomValue">100%</span>
+        </li>
+        <li>
+          <button id="zoomIn">
+            <i class="fas fa-search-plus"></i>
+          </button>
+        </li>
+        <li>
+          <button id="previous">
+            <i class="fas fa-arrow-alt-circle-left"></i>
+          </button>
+        </li>
+        <li>
+          <span id="current_page">1 of 1</span>
+        </li>
+        <li>
+          <button id="next">
+           <i class="fas fa-arrow-alt-circle-right"></i>
+          </button>
+        </li>
+        <li>
+          <button id="download">
+            <i class="fas fa-download"></i>
+          </button>
+        </li>
+      </ul>
+    </footer>
+    <script>
+      const currentPage = document.getElementById("current_page");
+      const viewer = document.querySelector(".pdf-viewer");
+      const rotateButton = document.getElementById("rotate");
+      const downloadButton = document.getElementById("download");
+      let currentPDF = {};
+
+      document.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+      });
+
+      function resetCurrentPDF() {
+        currentPDF = {
+          file: null,
+          countOfPages: 0,
+          currentPage: 1,
+          zoom: 1.0,
+          rotations: {}, // Store rotation values per page
+        };
+      }
+
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js";
+
+      function loadPDF(source) {
+        const loadingTask = pdfjsLib.getDocument(source);
+        resetCurrentPDF();
+
+        loadingTask.promise
+          .then((pdfDocument) => {
+            currentPDF.file = pdfDocument;
+            currentPDF.countOfPages = pdfDocument.numPages;
+            viewer.classList.remove("hidden");
+            document.querySelector("main h3").classList.add("hidden");
+            renderCurrentPage();
+          })
+          .catch((error) => {
+            console.error("Error loading PDF:", error);
+            alert(
+              "Error loading PDF. Please check the file path and try again."
+            );
+          });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const file = urlParams.get("file");
+        if (file) loadPDF(file);
+        else alert("No PDF file selected. Redirecting to home page.");
+      });
+
+      document.getElementById("zoomIn").addEventListener("click", () => {
+        if (currentPDF.file) {
+          currentPDF.zoom = Math.min(currentPDF.zoom + 0.1, 2.0);
+          document.getElementById("zoomValue").innerHTML =
+            Math.round(currentPDF.zoom * 100) + "%";
+          renderCurrentPage();
+        }
+      });
+
+      document.getElementById("zoomOut").addEventListener("click", () => {
+        if (currentPDF.file) {
+          currentPDF.zoom = Math.max(currentPDF.zoom - 0.1, 0.5);
+          document.getElementById("zoomValue").innerHTML =
+            Math.round(currentPDF.zoom * 100) + "%";
+          renderCurrentPage();
+        }
+      });
+
+      document.getElementById("next").addEventListener("click", () => {
+        if (currentPDF.currentPage < currentPDF.countOfPages) {
+          currentPDF.currentPage += 1;
+          renderCurrentPage();
+        }
+      });
+
+      document.getElementById("previous").addEventListener("click", () => {
+        if (currentPDF.currentPage - 1 > 0) {
+          currentPDF.currentPage -= 1;
+          renderCurrentPage();
+        }
+      });
+
+      rotateButton.addEventListener("click", () => {
+        if (currentPDF.file) {
+          const currentPageRotation =
+            currentPDF.rotations[currentPDF.currentPage] || 0;
+          currentPDF.rotations[currentPDF.currentPage] =
+            (currentPageRotation + 90) % 360;
+          renderCurrentPage();
+        }
+      });
+
+      downloadButton.addEventListener("click", () => {
+        if (currentPDF.file) {
+          const link = document.createElement("a");
+          link.href = currentPDF.file.getData().then((data) => {
+            const blob = new Blob([data], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = "downloaded.pdf";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          });
+        }
+      });
+
+      function renderCurrentPage() {
+        currentPDF.file.getPage(currentPDF.currentPage).then((page) => {
+          const context = viewer.getContext("2d");
+          const viewport = page.getViewport({
+            scale: currentPDF.zoom,
+            rotation: currentPDF.rotations[currentPDF.currentPage] || 0,
+          });
+
+          viewer.height = viewport.height;
+          viewer.width = viewport.width;
+
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport,
+          };
+          page.render(renderContext);
+        });
+        currentPage.innerHTML =
+          currentPDF.currentPage + " of " + currentPDF.countOfPages;
+      }
+    </script>
+  </body>
+</html>
