@@ -1,0 +1,211 @@
+/* Global Scrollbar Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f9f0; /* Matches the light green theme */
+  color: #333;
+  overflow-y: scroll; /* Force vertical scrollbar to always be visible */
+}
+
+html {
+  overflow-y: scroll; /* Ensures scrollbar is always visible */
+  scrollbar-width: thin; /* Firefox scrollbar width */
+  scrollbar-color: #2e7d32 #f0f9f0; /* Custom scrollbar colors */
+}
+
+html::-webkit-scrollbar {
+  width: 10px; /* Width of the scrollbar */
+}
+
+html::-webkit-scrollbar-track {
+  background: #f0f9f0; /* Track color */
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #2e7d32; /* Thumb color */
+  border-radius: 5px; /* Rounded scrollbar */
+  border: 2px solid #f0f9f0; /* Padding around the thumb */
+}
+
+* {
+  user-select: none; /* Prevent text selection */
+  cursor: default; /* Prevent text cursor */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f9f0; /* Matches the light green theme */
+  color: #333;
+  user-select: none; /* Prevent text selection */
+  cursor: default; /* Prevent text cursor */
+  overflow: hidden; /* Hide scrollbar */
+}
+
+/* Container Styles */
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  user-select: none; /* Prevent text selection */
+  cursor: default; /* Prevent text cursor */
+  overflow: hidden; /* Remove scrollbar */
+}
+
+h1 {
+  text-align: center;
+  color: #2d7a2d;
+  user-select: none; /* Prevent text selection */
+  cursor: default; /* Prevent text cursor */
+}
+
+.subject {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2d7a2d;
+  color: #ffffff;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+}
+
+.subject button {
+  background-color: #85c985;
+  border: none;
+  color: white;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.subject button:hover {
+  background-color: #6cbf6c;
+}
+
+.hidden {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+/* Expanded Section Scrollbars */
+.expanded {
+  display: block;
+  max-height: 250px; /* Limit the height of expanded sections */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #85c985 #f9f9f9;
+}
+
+.expanded::-webkit-scrollbar {
+  width: 8px;
+}
+
+.expanded::-webkit-scrollbar-track {
+  background: #f9f9f9;
+}
+
+.expanded::-webkit-scrollbar-thumb {
+  background-color: #85c985;
+  border-radius: 4px;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  user-select: none; /* Prevent text selection */
+  cursor: default; /* Prevent text cursor */
+}
+
+li {
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  user-select: none; /* Prevent text selection */
+  cursor: default; /* Prevent text cursor */
+}
+
+li input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: #2e7d32; /* Dark green */
+  transition: all 0.3s ease;
+}
+
+.topic {
+  margin-left: 20px;
+}
+
+label {
+  cursor: pointer;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+  user-select: none; /* Prevent text selection */
+  cursor: default; /* Prevent text cursor */
+}
+
+label.strikethrough {
+  text-decoration: line-through;
+  color: #888;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+li label.strikethrough {
+  text-decoration: line-through;
+  color: red; /* Change text color to red */
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+li input[type="checkbox"]:checked + label {
+  animation: strikethrough-animation 0.3s forwards;
+}
+
+@keyframes strikethrough-animation {
+  from {
+    color: initial;
+    text-decoration: none;
+  }
+  to {
+    color: red;
+    text-decoration: line-through;
+  }
+}
+
+.subject + .hidden {
+  transition: max-height 0.3s ease-out;
+}
+
+.subject + .hidden.expanded {
+  display: block;
+  max-height: 1000px; /* Arbitrary large value to allow for expansion */
+  transition: max-height 0.5s ease-in;
+}
+
+.download-button {
+  float: right;
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #4caf50; /* Green */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+}
+
+.download-button:hover {
+  background-color: #45a049; /* Darker green */
+}
