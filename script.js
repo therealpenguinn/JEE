@@ -131,7 +131,7 @@ function createChecklist() {
         let fileName;
         switch (subject) {
           case "Physics":
-            fileName = "pdf-viewer.html?file=pdfs/Chapter_1_ECaF.pdf";
+            fileName = "pdf-viewer.html?file=pdfs/p1.pdf";
             break;
           case "Chemistry":
             fileName = "pdf-viewer.html?file=pdfs/c1.pdf";
