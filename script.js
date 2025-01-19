@@ -30,7 +30,7 @@ const data = {
     "Inorganic Chemistry-I (20%)": [
       "Chemical Bonding",
       "Periodic Table & Periodicity in Properties",
-      "s-block and p-block (15-16 Groups)",
+      "s-block and p-block",
     ],
     "Inorganic Chemistry-II (17%)": [
       "Coordination Compounds",
