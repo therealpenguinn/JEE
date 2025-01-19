@@ -30,7 +30,7 @@ const data = {
     "Inorganic Chemistry-I (20%)": [
       "Chemical Bonding",
       "Periodic Table & Periodicity in Properties",
-      "s-block and p-block",
+      "s-block and p-block (15-16 Groups)",
     ],
     "Inorganic Chemistry-II (17%)": [
       "Coordination Compounds",
@@ -122,33 +122,28 @@ function createChecklist() {
     subjectHeader.classList.add("subject");
     subjectHeader.dataset.subject = subject;
 
-    // Create a download button (except for Mathematics)
+    // Create a view button (except for Mathematics)
     if (subject !== "Mathematics") {
-      const downloadButton = document.createElement("button");
-      downloadButton.textContent = "Download Formulae Sheet";
-      downloadButton.classList.add("download-button");
-      downloadButton.addEventListener("click", () => {
+      const viewButton = document.createElement("button");
+      viewButton.textContent = "View Formulae Sheet";
+      viewButton.classList.add("download-button");
+      viewButton.addEventListener("click", () => {
         let fileName;
         switch (subject) {
           case "Physics":
-            fileName = "pdfs/p.pdf";
+            fileName = "pdf-viewer.html?file=pdfs/Chapter_1_ECaF.pdf";
             break;
           case "Chemistry":
-            fileName = "pdfs/c.pdf";
+            fileName = "pdf-viewer.html?file=pdfs/c1.pdf";
             break;
           default:
             alert("No formulae sheet available for this subject.");
             return;
         }
-        const link = document.createElement("a");
-        link.href = fileName;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        window.location.href = fileName;
       });
 
-      subjectHeader.appendChild(downloadButton);
+      subjectHeader.appendChild(viewButton);
     }
 
     // Create a container for the topics (initially hidden)
