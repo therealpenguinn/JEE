@@ -17,6 +17,17 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <style>
+      * {
+          user-select: none; /* Prevent text selection */
+          cursor: default; /* Prevent text cursor */
+        }
+        html {
+                overflow-y: scroll; /* Ensures scrollbar is always visible */
+                scrollbar-width: thin; /* Firefox scrollbar width */
+                scrollbar-color: #171616 #171616; /* Custom scrollbar colors */
+              }
+    </style>
     <title>PDF Viewer</title>
   </head>
   <body>
@@ -169,6 +180,32 @@
             link.click();
             document.body.removeChild(link);
           });
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (currentPDF.file) {
+          if (event.key === "ArrowRight") {
+            if (currentPDF.currentPage < currentPDF.countOfPages) {
+              currentPDF.currentPage += 1;
+              renderCurrentPage();
+            }
+          } else if (event.key === "ArrowLeft") {
+            if (currentPDF.currentPage > 1) {
+              currentPDF.currentPage -= 1;
+              renderCurrentPage();
+            }
+          } else if (event.key === "=" || event.key === "+") {
+            currentPDF.zoom = Math.min(currentPDF.zoom + 0.1, 2.0);
+            document.getElementById("zoomValue").innerHTML =
+              Math.round(currentPDF.zoom * 100) + "%";
+            renderCurrentPage();
+          } else if (event.key === "-") {
+            currentPDF.zoom = Math.max(currentPDF.zoom - 0.1, 0.5);
+            document.getElementById("zoomValue").innerHTML =
+              Math.round(currentPDF.zoom * 100) + "%";
+            renderCurrentPage();
+          }
         }
       });
 
